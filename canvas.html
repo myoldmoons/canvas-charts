@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .input{
+            width: 150px;
+            position: absolute;
+        }
+        .input input{
+            display: block;
+            margin-bottom: 2px;
+            width: 60px;
+            border: none;
+            border:1px solid rgb(22, 212, 203);
+        }
+        .input input:nth-of-type(1){
+            background-color: rgba(255, 238, 0, 0.979);
+        }
+        .input input:nth-of-type(2){
+            background-color: rgb(30, 238, 11);
+        }
+        .input input:nth-of-type(3){
+            background-color: rgb(255, 102, 0);
+        }
+        .input input:nth-of-type(4){
+            background-color:rgb(236, 13, 236);
+        }
+        .input input:nth-of-type(5){
+            background-color: rgb(0, 102, 255);
+        }
+        .input input:nth-of-type(6){
+            background-color:rgba(158, 154, 154, 0.993);
+        }
+        .input input:nth-of-type(7){
+            background-color: rgb(218, 70, 82);
+        }
+        button{
+            width: 62px;
+            background-color: #fff;
+            outline:none;
+        }
+        canvas{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="input">
+        <input type="text" id="one">
+        <input type="text" id="two">
+        <input type="text" id="three">
+        <input type="text" id="four">
+        <input type="text" id="five">
+        <input type="text" id="six">
+        <button id="btn">生成</button>
+    </div>
+    <canvas width="600" height="600" style="border:1px solid #aaa" id="cas"></canvas>
+    <script>
+        function $(a){
+            return document.querySelector(a)
+        }
+        //获取页面元素
+        var cas=document.querySelector("#cas")
+        var ctx=cas.getContext('2d');
+        // 设置初始化状态
+        ctx.arc(300,300,100,0,10)
+        ctx.strokeStyle='red'
+        ctx.stroke();
+        // 注册点击生成事件 
+        $('#btn').onclick=function(){
+            ctx.clearRect(0,0,cas.width,cas.height)
+            var arr=[$('#one').value*1,$('#two').value*1,$('#three').value*1,$('#four').value*1,$('#five').value*1,$('#six').value*1];
+            var color=['rgba(255, 238, 0, 0.979)','rgb(30, 238, 11)','rgb(255, 102, 0)','rgb(236, 13, 236)',"rgb(0, 102, 255)","rgba(158, 154, 154, 0.993)","rgb(218, 70, 82)"];
+            var sum=0;
+            for (var i=0;i<arr.length;i++){
+                sum+=arr[i];
+            }
+            var arr2=[];
+            for(var i=0;i<arr.length;i++){
+                var data=arr[i]/sum*360
+                arr2.push(data)
+            }
+            ctx.font='20px 楷体'
+            var start=-90;
+            for(var i=0;i<arr2.length;i++){
+                if(arr2[i]==0){
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.moveTo(300,300)
+                if(i==0){
+                    ctx.arc(300,300,100,toRad(start),toRad(start+arr2[i]))
+                    var str=start;
+                    var str2=start+arr2[i];
+                    start+=arr2[i] 
+                }
+                else{
+                    ctx.arc(300,300,100,toRad(start),toRad(start+arr2[i]))
+                    var str=start;
+                    var str2=start+arr2[i];
+                    start+=arr2[i];
+                }
+                ctx.fillStyle=color[i]
+                ctx.fill();
+                ctx.beginPath();
+                ctx.textAlign="left";
+                ctx.textBaseline="bottom"
+                ctx.fillText(Math.floor(arr[i]/sum*100)+'%',550,(i+1)*20)
+                ctx.stroke();
+                
+                var x1=130*Math.cos(toRad((str2-str)/2+str));
+                var y1=130*Math.sin(toRad((str2-str)/2+str));
+                if(((str2-str)/2+str)<=0){
+                    x1=300+x1;
+                    y1=300+y1;
+                    ctx.textAlign='left';
+                    ctx.textBaseline='bottom'
+                }
+                else if(0<(str2-str)/2+str&&(str2-str)/2+str<=90){
+                    x1=300+x1;
+                    y1=300+y1;
+                    ctx.textAlign='left';
+                    ctx.textBaseline='top'
+                }
+                else if(90<(str2-str)/2+str&&(str2-str)/2+str<=180){
+                    x1=300+x1;
+                    y1=300+y1;
+                    ctx.textAlign='right';
+                    ctx.textBaseline='top'
+                }
+                else if(180<(str2-str)/2+str&&(str2-str)/2+str<270){
+                    x1=300+x1;
+                    y1=300+y1;
+                    ctx.textAlign='right';
+                    ctx.textBaseline='bottom'
+                }
+                ctx.beginPath();
+                ctx.fillStyle=color[i]               
+                ctx.fillText(Math.floor(arr[i]/sum*100)+'%',x1,y1)
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(300,300)
+                ctx.lineTo(x1,y1)
+                ctx.strokeStyle='rgb(66, 66, 66)'
+                ctx.lineWidth="1"
+                ctx.stroke();
+                }
+            }
+                    //角度转弧度
+                function toRad(a){
+                        return a*Math.PI/180
+                }
+            
+         </script>
+</body>
+</html>
